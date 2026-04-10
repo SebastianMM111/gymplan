@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEBI — Program de Antrenament</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
 <style>
   :root {
     --black: #0a0a0a;
@@ -25,27 +25,60 @@
     --surface: #171717;
     --input-bg: #1e1e1e;
     --input-border: #333;
+    --cardio-bg: rgba(122,255,107,0.08);
+    --cardio-border: rgba(122,255,107,0.3);
+    --cardio-color: #7aff6b;
+    --cardio-done-bg: rgba(122,255,107,0.2);
   }
 
-  [data-theme="light"] {
-    --black: #f5f5f0;
-    --dark: #eeeeea;
+  [data-theme="purple"] {
+    --black: #1a0a2e;
+    --dark: #220d3b;
+    --card: #2d1152;
+    --border: #4a2070;
+    --accent: #d946ef;
+    --accent2: #f43f5e;
+    --push: #f97316;
+    --pull: #818cf8;
+    --legs: #a3e635;
+    --upper: #e879f9;
+    --lower: #fbbf24;
+    --text: #f3e8ff;
+    --muted: #a78bca;
+    --rir: #3b1a6e;
+    --bg: #1a0a2e;
+    --surface: #2d1152;
+    --input-bg: #25103f;
+    --input-border: #5b2d8a;
+    --cardio-bg: rgba(217,70,239,0.1);
+    --cardio-border: rgba(217,70,239,0.4);
+    --cardio-color: #d946ef;
+    --cardio-done-bg: rgba(217,70,239,0.25);
+  }
+
+  [data-theme="kawaii"] {
+    --black: #fff0f6;
+    --dark: #ffe4ef;
     --card: #ffffff;
-    --border: #e0e0d8;
-    --accent: #8a9900;
-    --accent2: #cc2200;
-    --push: #cc4400;
-    --pull: #0066cc;
-    --legs: #3a8a00;
-    --upper: #7700cc;
-    --lower: #aa7700;
-    --text: #111111;
-    --muted: #888;
-    --rir: #eeeeea;
-    --bg: #f5f5f0;
+    --border: #ffc8e0;
+    --accent: #ff6baa;
+    --accent2: #ff4081;
+    --push: #ff8fab;
+    --pull: #a78bfa;
+    --legs: #34d399;
+    --upper: #f472b6;
+    --lower: #fbbf24;
+    --text: #4a1942;
+    --muted: #c084a0;
+    --rir: #ffe4ef;
+    --bg: #fff0f6;
     --surface: #ffffff;
-    --input-bg: #f5f5f0;
-    --input-border: #ddd;
+    --input-bg: #fff5f9;
+    --input-border: #ffb3d1;
+    --cardio-bg: rgba(255,107,170,0.08);
+    --cardio-border: rgba(255,107,170,0.35);
+    --cardio-color: #ff6baa;
+    --cardio-done-bg: rgba(255,107,170,0.18);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -56,6 +89,14 @@
     font-family: 'DM Sans', sans-serif;
     overflow-x: hidden;
     transition: background 0.3s, color 0.3s;
+  }
+
+  [data-theme="kawaii"] body,
+  [data-theme="kawaii"] .hero-name,
+  [data-theme="kawaii"] .card-title,
+  [data-theme="kawaii"] .day-num,
+  [data-theme="kawaii"] .timer-display {
+    font-family: 'Nunito', sans-serif !important;
   }
 
   /* TOP BAR */
@@ -89,6 +130,7 @@
     color: var(--muted);
     transition: all 0.2s;
   }
+  [data-theme="kawaii"] .day-tab { font-family: 'Nunito', sans-serif; font-size: 12px; letter-spacing: 0; }
   .day-tab:hover { color: var(--text); border-color: var(--text); }
   .day-tab.push:hover, .day-tab.push.active { background: rgba(255,107,53,0.15); border-color: var(--push); color: var(--push); }
   .day-tab.pull:hover, .day-tab.pull.active { background: rgba(60,180,255,0.15); border-color: var(--pull); color: var(--pull); }
@@ -100,17 +142,20 @@
 
   .theme-btn {
     flex-shrink: 0;
-    width: 36px; height: 36px;
-    border-radius: 50%;
+    padding: 5px 12px;
+    border-radius: 20px;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--text);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.5px;
     transition: all 0.2s;
+    white-space: nowrap;
   }
-  .theme-btn:hover { background: var(--card); }
+  .theme-btn:hover { background: var(--card); border-color: var(--accent); color: var(--accent); }
 
   /* HERO */
   .hero {
@@ -136,6 +181,7 @@
     line-height: 0.85;
     letter-spacing: -2px;
   }
+  [data-theme="kawaii"] .hero-name { font-family: 'Pacifico', cursive; font-size: clamp(40px, 7vw, 80px); letter-spacing: 0; line-height: 1.1; }
   .hero-name span { color: var(--accent); display: block; }
 
   .hero-stats { display: flex; gap: 28px; flex-wrap: wrap; padding-bottom: 8px; }
@@ -146,6 +192,7 @@
     font-size: 26px; font-weight: 700;
     color: var(--accent); display: block;
   }
+  [data-theme="kawaii"] .stat-val { font-family: 'Nunito', sans-serif; font-weight: 800; }
   .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-top: 4px; }
 
   .split-badge {
@@ -155,6 +202,7 @@
     font-family: 'Space Mono', monospace; font-size: 11px;
     letter-spacing: 2px; color: var(--accent); margin-top: 28px;
   }
+  [data-theme="kawaii"] .split-badge { font-family: 'Nunito', sans-serif; border-radius: 20px; letter-spacing: 0; font-weight: 700; }
 
   /* WEEK GRID */
   .week-overview { max-width: 1100px; margin: 0 auto; padding: 40px 40px 24px; }
@@ -166,6 +214,7 @@
     border-radius: 8px; padding: 16px 12px; text-align: center;
     cursor: pointer; transition: transform 0.2s, border-color 0.2s;
   }
+  [data-theme="kawaii"] .week-day { border-radius: 16px; }
   .week-day:hover { transform: translateY(-2px); }
   .week-day.push { border-top: 3px solid var(--push); }
   .week-day.pull { border-top: 3px solid var(--pull); }
@@ -174,7 +223,9 @@
   .week-day.lower { border-top: 3px solid var(--lower); }
 
   .day-num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; line-height: 1; color: var(--muted); }
+  [data-theme="kawaii"] .day-num { font-family: 'Nunito', sans-serif; font-weight: 800; }
   .day-type { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px; margin-top: 4px; font-weight: 700; }
+  [data-theme="kawaii"] .day-type { font-family: 'Nunito', sans-serif; font-size: 11px; letter-spacing: 0; font-weight: 800; }
   .push .day-type { color: var(--push); }
   .pull .day-type { color: var(--pull); }
   .legs .day-type { color: var(--legs); }
@@ -189,6 +240,7 @@
   .upper .day-progress-fill { background: var(--upper); }
   .lower .day-progress-fill { background: var(--lower); }
   .day-pct { font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 4px; }
+  [data-theme="kawaii"] .day-pct { font-family: 'Nunito', sans-serif; font-weight: 700; }
 
   /* WORKOUTS */
   .workouts { max-width: 1100px; margin: 0 auto; padding: 16px 40px 80px; display: grid; gap: 28px; }
@@ -198,6 +250,7 @@
     border-radius: 12px; overflow: hidden;
     animation: fadeUp 0.4s ease both;
   }
+  [data-theme="kawaii"] .workout-card { border-radius: 20px; box-shadow: 0 4px 24px rgba(255,107,170,0.08); }
   @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
   .workout-card:nth-child(1){animation-delay:0.05s}
   .workout-card:nth-child(2){animation-delay:0.1s}
@@ -217,6 +270,7 @@
     display: flex; align-items: center; justify-content: center;
     font-family: 'Bebas Neue', sans-serif; font-size: 18px; flex-shrink: 0;
   }
+  [data-theme="kawaii"] .day-circle { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; }
   .push .day-circle { background: rgba(255,107,53,0.15); color: var(--push); border: 1px solid var(--push); }
   .pull .day-circle { background: rgba(60,180,255,0.15); color: var(--pull); border: 1px solid var(--pull); }
   .legs .day-circle { background: rgba(122,255,107,0.15); color: var(--legs); border: 1px solid var(--legs); }
@@ -224,20 +278,52 @@
   .lower .day-circle { background: rgba(255,205,60,0.15); color: var(--lower); border: 1px solid var(--lower); }
 
   .card-title { font-family: 'Bebas Neue', sans-serif; font-size: 30px; line-height: 1; letter-spacing: 1px; }
+  [data-theme="kawaii"] .card-title { font-family: 'Pacifico', cursive; font-size: 22px; letter-spacing: 0; }
   .push .card-title { color: var(--push); }
   .pull .card-title { color: var(--pull); }
   .legs .card-title { color: var(--legs); }
   .upper .card-title { color: var(--upper); }
   .lower .card-title { color: var(--lower); }
   .card-subtitle { font-size: 11px; color: var(--muted); margin-top: 2px; letter-spacing: 1px; text-transform: uppercase; }
+  [data-theme="kawaii"] .card-subtitle { font-family: 'Nunito', sans-serif; letter-spacing: 0; font-weight: 600; }
 
   .card-header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* CARDIO TAG — interactive */
   .cardio-tag {
-    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-    border-radius: 20px; padding: 5px 12px;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--cardio-bg);
+    border: 1px solid var(--cardio-border);
+    border-radius: 20px; padding: 6px 14px;
     font-size: 11px; font-family: 'Space Mono', monospace;
-    color: var(--muted); letter-spacing: 1px;
+    color: var(--cardio-color); letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
   }
+  [data-theme="kawaii"] .cardio-tag { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0; border-radius: 24px; }
+  .cardio-tag:hover { filter: brightness(1.15); transform: scale(1.02); }
+  .cardio-tag.done {
+    background: var(--cardio-done-bg);
+    border-color: var(--cardio-color);
+    box-shadow: 0 0 12px rgba(122,255,107,0.15);
+  }
+  [data-theme="purple"] .cardio-tag.done { box-shadow: 0 0 12px rgba(217,70,239,0.2); }
+  [data-theme="kawaii"] .cardio-tag.done { box-shadow: 0 0 12px rgba(255,107,170,0.2); }
+
+  .cardio-check-circle {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 1.5px solid var(--cardio-color);
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: transparent;
+    flex-shrink: 0; transition: all 0.2s;
+  }
+  .cardio-tag.done .cardio-check-circle {
+    background: var(--cardio-color);
+    color: #000;
+  }
+  [data-theme="kawaii"] .cardio-tag.done .cardio-check-circle { color: #fff; }
 
   .card-progress-bar {
     height: 3px; background: var(--border);
@@ -253,7 +339,8 @@
   .exercise-row {
     border-bottom: 1px solid rgba(255,255,255,0.04);
   }
-  [data-theme="light"] .exercise-row { border-bottom: 1px solid rgba(0,0,0,0.05); }
+  [data-theme="purple"] .exercise-row { border-bottom: 1px solid rgba(255,255,255,0.05); }
+  [data-theme="kawaii"] .exercise-row { border-bottom: 1px solid rgba(255,107,170,0.08); }
   .exercise-row:last-child { border-bottom: none; }
 
   .exercise-header {
@@ -266,9 +353,10 @@
     transition: background 0.15s;
   }
   .exercise-header:hover { background: rgba(255,255,255,0.02); }
-  [data-theme="light"] .exercise-header:hover { background: rgba(0,0,0,0.02); }
+  [data-theme="kawaii"] .exercise-header:hover { background: rgba(255,107,170,0.04); }
 
   .ex-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+  [data-theme="kawaii"] .ex-num { font-family: 'Nunito', sans-serif; font-weight: 700; }
   .ex-name-wrap {}
   .ex-name { font-size: 14px; font-weight: 600; color: var(--text); }
   .ex-video-link {
@@ -277,10 +365,12 @@
     transition: color 0.2s;
     font-family: 'Space Mono', monospace;
   }
+  [data-theme="kawaii"] .ex-video-link { font-family: 'Nunito', sans-serif; font-weight: 600; }
   .ex-video-link:hover { color: var(--accent); }
   .ex-video-icon { font-size: 12px; }
 
   .ex-summary { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; white-space: nowrap; }
+  [data-theme="kawaii"] .ex-summary { font-family: 'Nunito', sans-serif; font-weight: 700; }
 
   /* SERIES BODY */
   .exercise-body { padding: 0 20px 14px 68px; }
@@ -302,12 +392,14 @@
     gap: 6px;
     transition: border-color 0.2s;
   }
+  [data-theme="kawaii"] .serie-card { border-radius: 14px; }
   .serie-card.done { border-color: var(--accent); }
 
   .serie-top {
     display: flex; align-items: center; justify-content: space-between;
   }
   .serie-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+  [data-theme="kawaii"] .serie-label { font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0; font-size: 11px; }
   .serie-check {
     width: 20px; height: 20px; border-radius: 50%;
     border: 1.5px solid var(--border);
@@ -317,16 +409,19 @@
     color: transparent;
   }
   .serie-check.checked { background: var(--accent); border-color: var(--accent); color: #000; }
+  [data-theme="kawaii"] .serie-check.checked { color: #fff; }
 
   .serie-reps {
     font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700;
     color: var(--text);
   }
+  [data-theme="kawaii"] .serie-reps { font-family: 'Nunito', sans-serif; font-weight: 800; }
   .serie-rir {
     font-size: 10px; background: var(--rir); color: var(--muted);
     border-radius: 4px; padding: 1px 6px; font-family: 'Space Mono', monospace;
     display: inline-block; width: fit-content;
   }
+  [data-theme="kawaii"] .serie-rir { font-family: 'Nunito', sans-serif; font-weight: 600; border-radius: 8px; }
 
   .serie-inputs { display: flex; gap: 8px; margin-top: 2px; }
   .weight-input, .reps-done-input {
@@ -337,8 +432,10 @@
     outline: none; transition: border-color 0.2s;
     min-width: 0;
   }
+  [data-theme="kawaii"] .weight-input, [data-theme="kawaii"] .reps-done-input { font-family: 'Nunito', sans-serif; font-weight: 600; border-radius: 10px; }
   .weight-input:focus, .reps-done-input:focus { border-color: var(--accent); }
   .input-label { font-size: 9px; color: var(--muted); font-family: 'Space Mono', monospace; margin-bottom: 2px; letter-spacing: 1px; }
+  [data-theme="kawaii"] .input-label { font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0; font-size: 10px; }
   .input-group { display: flex; flex-direction: column; flex: 1; }
 
   /* REST TIMER */
@@ -349,6 +446,7 @@
     color: var(--muted); cursor: pointer; transition: all 0.2s;
     letter-spacing: 1px;
   }
+  [data-theme="kawaii"] .rest-timer-btn { font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0; font-size: 11px; border-radius: 12px; }
   .rest-timer-btn:hover { border-color: var(--accent); color: var(--accent); }
   .rest-timer-btn.active { background: rgba(232,255,60,0.1); border-color: var(--accent); color: var(--accent); }
 
@@ -363,10 +461,13 @@
     flex-direction: column; align-items: center; gap: 8px;
     animation: slideUp 0.3s ease;
   }
+  [data-theme="kawaii"] .timer-float { border-radius: 24px; box-shadow: 0 4px 32px rgba(255,107,170,0.25); }
   .timer-float.visible { display: flex; }
   @keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
   .timer-label { font-size: 10px; font-family: 'Space Mono', monospace; color: var(--muted); letter-spacing: 1px; }
+  [data-theme="kawaii"] .timer-label { font-family: 'Nunito', sans-serif; font-weight: 700; }
   .timer-display { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1; color: var(--accent); }
+  [data-theme="kawaii"] .timer-display { font-family: 'Nunito', sans-serif; font-weight: 800; }
   .timer-display.urgent { color: var(--accent2); }
   .timer-controls { display: flex; gap: 8px; }
   .timer-ctrl-btn {
@@ -375,6 +476,7 @@
     border: 1px solid var(--border); background: transparent;
     color: var(--text); cursor: pointer; transition: all 0.2s;
   }
+  [data-theme="kawaii"] .timer-ctrl-btn { font-family: 'Nunito', sans-serif; font-weight: 700; border-radius: 12px; }
   .timer-ctrl-btn:hover { background: var(--card); }
   .timer-presets { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
   .timer-preset {
@@ -383,8 +485,8 @@
     border: 1px solid var(--border); background: transparent;
     color: var(--muted); cursor: pointer; transition: all 0.2s;
   }
+  [data-theme="kawaii"] .timer-preset { font-family: 'Nunito', sans-serif; font-weight: 700; }
   .timer-preset:hover { color: var(--accent); border-color: var(--accent); }
-  .timer-progress-ring { position: relative; margin: 4px 0; }
 
   /* NOTES */
   .notes-section { margin-top: 10px; }
@@ -394,6 +496,7 @@
     display: flex; align-items: center; gap: 6px; padding: 0;
     transition: color 0.2s; letter-spacing: 1px;
   }
+  [data-theme="kawaii"] .notes-toggle { font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0; }
   .notes-toggle:hover { color: var(--text); }
   .notes-area {
     margin-top: 8px;
@@ -405,6 +508,7 @@
     transition: border-color 0.2s;
     display: none;
   }
+  [data-theme="kawaii"] .notes-area { border-radius: 14px; font-family: 'Nunito', sans-serif; }
   .notes-area.open { display: block; }
   .notes-area:focus { border-color: var(--accent); }
   .notes-area::placeholder { color: var(--muted); }
@@ -418,8 +522,9 @@
     background: rgba(255,255,255,0.02);
     border-bottom: 1px solid var(--border);
   }
-  [data-theme="light"] .exercise-table-header { background: rgba(0,0,0,0.02); }
+  [data-theme="kawaii"] .exercise-table-header { background: rgba(255,107,170,0.04); }
   .th-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  [data-theme="kawaii"] .th-label { font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0; font-size: 10px; }
 
   /* FOOTER */
   .footer {
@@ -429,11 +534,13 @@
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
   }
   .footer-text { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  [data-theme="kawaii"] .footer-text { font-family: 'Nunito', sans-serif; font-weight: 600; }
   .objective-tag {
     background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.3);
     color: var(--accent2); padding: 5px 14px; border-radius: 20px;
     font-size: 11px; font-family: 'Space Mono', monospace; letter-spacing: 1px;
   }
+  [data-theme="kawaii"] .objective-tag { font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0; border-radius: 20px; }
 
   @media (max-width: 768px) {
     .topbar, .hero, .week-overview, .workouts, .footer { padding-left: 16px; padding-right: 16px; }
@@ -475,7 +582,7 @@
   <button class="day-tab upper" onclick="scrollToDay('z4', this)">Z4 · UPPER</button>
   <button class="day-tab lower" onclick="scrollToDay('z5', this)">Z5 · LOWER</button>
   <div class="topbar-spacer"></div>
-  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
+  <button class="theme-btn" onclick="cycleTheme()" id="themeBtn">🌙 Dark</button>
 </nav>
 
 <!-- HERO -->
@@ -544,6 +651,7 @@
 const DAYS = [
   {
     id: 'z1', day: 'Z1', type: 'push', title: 'PUSH', sub: 'Ziua 1 — Piept · Umeri · Triceps',
+    cardio: '10 MIN CARDIO',
     exercises: [
       { name: 'Machine Lateral Raises', video: 'https://www.youtube.com/results?search_query=machine+lateral+raises',
         series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–10',rir:'RIR 2'},{label:'SERIA 3',reps:'10–12',rir:'RIR 2'}] },
@@ -563,6 +671,7 @@ const DAYS = [
   },
   {
     id: 'z2', day: 'Z2', type: 'pull', title: 'PULL', sub: 'Ziua 2 — Spate · Biceps · Core',
+    cardio: '10 MIN CARDIO',
     exercises: [
       { name: 'Leg Raises', video: 'https://www.youtube.com/results?search_query=leg+raises+hanging',
         series: [{label:'SERIA 1',reps:'10 reps',rir:''},{label:'SERIA 2',reps:'12 reps',rir:''}] },
@@ -582,6 +691,7 @@ const DAYS = [
   },
   {
     id: 'z3', day: 'Z3', type: 'legs', title: 'LEGS', sub: 'Ziua 3 — Picioare Complet',
+    cardio: '10 MIN CARDIO',
     exercises: [
       { name: 'Seated Calves Raises', video: 'https://www.youtube.com/results?search_query=seated+calf+raise',
         series: [{label:'SERIA 1',reps:'6–8',rir:'RIR 1'},{label:'SERIA 2',reps:'8–10',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'},{label:'SERIA 4',reps:'8–12',rir:'RIR 2'}] },
@@ -599,6 +709,7 @@ const DAYS = [
   },
   {
     id: 'z4', day: 'Z4', type: 'upper', title: 'UPPER', sub: 'Ziua 4 — Corp Superior Complet',
+    cardio: '10 MIN CARDIO',
     exercises: [
       { name: 'Machine Lateral Raises', video: 'https://www.youtube.com/results?search_query=machine+lateral+raises',
         series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–10',rir:'RIR 2'},{label:'SERIA 3',reps:'10–12',rir:'RIR 2'}] },
@@ -620,6 +731,7 @@ const DAYS = [
   },
   {
     id: 'z5', day: 'Z5', type: 'lower', title: 'LOWER', sub: 'Ziua 5 — Corp Inferior Complet',
+    cardio: '10 MIN CARDIO',
     exercises: [
       { name: 'Seated Calves Raises', video: 'https://www.youtube.com/results?search_query=seated+calf+raise',
         series: [{label:'SERIA 1',reps:'8–12',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'},{label:'SERIA 4',reps:'8–12',rir:'RIR 2'}] },
@@ -638,10 +750,12 @@ const DAYS = [
 ];
 
 const state = {};
+const cardioState = {}; // track cardio done per day
 
 function initState() {
   DAYS.forEach(day => {
     state[day.id] = {};
+    cardioState[day.id] = false;
     day.exercises.forEach((ex, ei) => {
       state[day.id][ei] = {
         checked: new Array(ex.series.length).fill(false),
@@ -672,6 +786,23 @@ function updateProgress(dayId) {
   if (fill) fill.style.width = pct + '%';
   if (label) label.textContent = pct + '%';
   if (cardFill) cardFill.style.width = pct + '%';
+}
+
+function toggleCardio(dayId) {
+  cardioState[dayId] = !cardioState[dayId];
+  const tagEl = document.getElementById('cardio-tag-' + dayId);
+  const checkEl = document.getElementById('cardio-check-' + dayId);
+  const textEl = document.getElementById('cardio-text-' + dayId);
+  if (!tagEl) return;
+  if (cardioState[dayId]) {
+    tagEl.classList.add('done');
+    checkEl.textContent = '✓';
+    textEl.textContent = 'CARDIO DONE!';
+  } else {
+    tagEl.classList.remove('done');
+    checkEl.textContent = '';
+    textEl.textContent = '10 MIN CARDIO';
+  }
 }
 
 function toggleCheck(dayId, exIdx, serIdx) {
@@ -794,7 +925,10 @@ function renderAll() {
           </div>
         </div>
         <div class="card-header-right">
-          <div class="cardio-tag">🏃 10 MIN CARDIO</div>
+          <div class="cardio-tag" id="cardio-tag-${day.id}" onclick="toggleCardio('${day.id}')" title="Click to mark cardio done">
+            <div class="cardio-check-circle" id="cardio-check-${day.id}"></div>
+            🏃 <span id="cardio-text-${day.id}">10 MIN CARDIO</span>
+          </div>
         </div>
       </div>
       <div class="card-progress-bar"><div class="card-progress-fill" id="card-prog-${day.id}" style="width:0%"></div></div>
@@ -816,7 +950,6 @@ function scrollToDay(id, tabEl) {
   if (tabEl) tabEl.classList.add('active');
 }
 
-// Update active tab on scroll
 window.addEventListener('scroll', () => {
   DAYS.forEach(day => {
     const el = document.getElementById(day.id);
@@ -830,12 +963,19 @@ window.addEventListener('scroll', () => {
   });
 }, { passive: true });
 
-// THEME
-function toggleTheme() {
-  const body = document.body;
-  const isLight = body.getAttribute('data-theme') === 'light';
-  body.setAttribute('data-theme', isLight ? '' : 'light');
-  document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
+// THEME CYCLING: dark → purple → kawaii → dark
+const themes = [
+  { key: '', label: '🌙 Dark' },
+  { key: 'purple', label: '💜 Purple' },
+  { key: 'kawaii', label: '🌸 Kawaii' },
+];
+let themeIdx = 0;
+
+function cycleTheme() {
+  themeIdx = (themeIdx + 1) % themes.length;
+  const t = themes[themeIdx];
+  document.body.setAttribute('data-theme', t.key);
+  document.getElementById('themeBtn').textContent = t.label;
 }
 
 // REST TIMER
