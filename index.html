@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEBI — Program de Antrenament</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --card: #171717;
+    --border: #2a2a2a;
+    --accent: #e8ff3c;
+    --accent2: #ff4d4d;
+    --push: #ff6b35;
+    --pull: #3cb4ff;
+    --legs: #7aff6b;
+    --upper: #c87dff;
+    --lower: #ffcd3c;
+    --text: #f0f0f0;
+    --muted: #666;
+    --rir: #2a2a2a;
+    --bg: #0a0a0a;
+    --surface: #171717;
+    --input-bg: #1e1e1e;
+    --input-border: #333;
+  }
+
+  [data-theme="light"] {
+    --black: #f5f5f0;
+    --dark: #eeeeea;
+    --card: #ffffff;
+    --border: #e0e0d8;
+    --accent: #8a9900;
+    --accent2: #cc2200;
+    --push: #cc4400;
+    --pull: #0066cc;
+    --legs: #3a8a00;
+    --upper: #7700cc;
+    --lower: #aa7700;
+    --text: #111111;
+    --muted: #888;
+    --rir: #eeeeea;
+    --bg: #f5f5f0;
+    --surface: #ffffff;
+    --input-bg: #f5f5f0;
+    --input-border: #ddd;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--black);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 52px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .topbar::-webkit-scrollbar { display: none; }
+
+  .day-tab {
+    flex-shrink: 0;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .day-tab:hover { color: var(--text); border-color: var(--text); }
+  .day-tab.push:hover, .day-tab.push.active { background: rgba(255,107,53,0.15); border-color: var(--push); color: var(--push); }
+  .day-tab.pull:hover, .day-tab.pull.active { background: rgba(60,180,255,0.15); border-color: var(--pull); color: var(--pull); }
+  .day-tab.legs:hover, .day-tab.legs.active { background: rgba(122,255,107,0.15); border-color: var(--legs); color: var(--legs); }
+  .day-tab.upper:hover, .day-tab.upper.active { background: rgba(200,125,255,0.15); border-color: var(--upper); color: var(--upper); }
+  .day-tab.lower:hover, .day-tab.lower.active { background: rgba(255,205,60,0.15); border-color: var(--lower); color: var(--lower); }
+
+  .topbar-spacer { flex: 1; }
+
+  .theme-btn {
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+  .theme-btn:hover { background: var(--card); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 60px 40px 48px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .hero-split {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 10vw, 120px);
+    line-height: 0.85;
+    letter-spacing: -2px;
+  }
+  .hero-name span { color: var(--accent); display: block; }
+
+  .hero-stats { display: flex; gap: 28px; flex-wrap: wrap; padding-bottom: 8px; }
+
+  .stat { text-align: center; }
+  .stat-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 26px; font-weight: 700;
+    color: var(--accent); display: block;
+  }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-top: 4px; }
+
+  .split-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 4px; padding: 10px 20px;
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    letter-spacing: 2px; color: var(--accent); margin-top: 28px;
+  }
+
+  /* WEEK GRID */
+  .week-overview { max-width: 1100px; margin: 0 auto; padding: 40px 40px 24px; }
+  .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: var(--muted); margin-bottom: 16px; }
+
+  .week-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .week-day {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 12px; text-align: center;
+    cursor: pointer; transition: transform 0.2s, border-color 0.2s;
+  }
+  .week-day:hover { transform: translateY(-2px); }
+  .week-day.push { border-top: 3px solid var(--push); }
+  .week-day.pull { border-top: 3px solid var(--pull); }
+  .week-day.legs { border-top: 3px solid var(--legs); }
+  .week-day.upper { border-top: 3px solid var(--upper); }
+  .week-day.lower { border-top: 3px solid var(--lower); }
+
+  .day-num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; line-height: 1; color: var(--muted); }
+  .day-type { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px; margin-top: 4px; font-weight: 700; }
+  .push .day-type { color: var(--push); }
+  .pull .day-type { color: var(--pull); }
+  .legs .day-type { color: var(--legs); }
+  .upper .day-type { color: var(--upper); }
+  .lower .day-type { color: var(--lower); }
+
+  .day-progress { margin-top: 8px; background: var(--border); border-radius: 4px; height: 4px; overflow: hidden; }
+  .day-progress-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+  .push .day-progress-fill { background: var(--push); }
+  .pull .day-progress-fill { background: var(--pull); }
+  .legs .day-progress-fill { background: var(--legs); }
+  .upper .day-progress-fill { background: var(--upper); }
+  .lower .day-progress-fill { background: var(--lower); }
+  .day-pct { font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 4px; }
+
+  /* WORKOUTS */
+  .workouts { max-width: 1100px; margin: 0 auto; padding: 16px 40px 80px; display: grid; gap: 28px; }
+
+  .workout-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .workout-card:nth-child(1){animation-delay:0.05s}
+  .workout-card:nth-child(2){animation-delay:0.1s}
+  .workout-card:nth-child(3){animation-delay:0.15s}
+  .workout-card:nth-child(4){animation-delay:0.2s}
+  .workout-card:nth-child(5){animation-delay:0.25s}
+
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+    gap: 12px; flex-wrap: wrap;
+  }
+  .card-header-left { display: flex; align-items: center; gap: 14px; }
+
+  .day-circle {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px; flex-shrink: 0;
+  }
+  .push .day-circle { background: rgba(255,107,53,0.15); color: var(--push); border: 1px solid var(--push); }
+  .pull .day-circle { background: rgba(60,180,255,0.15); color: var(--pull); border: 1px solid var(--pull); }
+  .legs .day-circle { background: rgba(122,255,107,0.15); color: var(--legs); border: 1px solid var(--legs); }
+  .upper .day-circle { background: rgba(200,125,255,0.15); color: var(--upper); border: 1px solid var(--upper); }
+  .lower .day-circle { background: rgba(255,205,60,0.15); color: var(--lower); border: 1px solid var(--lower); }
+
+  .card-title { font-family: 'Bebas Neue', sans-serif; font-size: 30px; line-height: 1; letter-spacing: 1px; }
+  .push .card-title { color: var(--push); }
+  .pull .card-title { color: var(--pull); }
+  .legs .card-title { color: var(--legs); }
+  .upper .card-title { color: var(--upper); }
+  .lower .card-title { color: var(--lower); }
+  .card-subtitle { font-size: 11px; color: var(--muted); margin-top: 2px; letter-spacing: 1px; text-transform: uppercase; }
+
+  .card-header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cardio-tag {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 12px;
+    font-size: 11px; font-family: 'Space Mono', monospace;
+    color: var(--muted); letter-spacing: 1px;
+  }
+
+  .card-progress-bar {
+    height: 3px; background: var(--border);
+  }
+  .card-progress-fill { height: 100%; transition: width 0.4s; }
+  .push .card-progress-fill { background: var(--push); }
+  .pull .card-progress-fill { background: var(--pull); }
+  .legs .card-progress-fill { background: var(--legs); }
+  .upper .card-progress-fill { background: var(--upper); }
+  .lower .card-progress-fill { background: var(--lower); }
+
+  /* EXERCISE ROWS */
+  .exercise-row {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  [data-theme="light"] .exercise-row { border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .exercise-row:last-child { border-bottom: none; }
+
+  .exercise-header {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .exercise-header:hover { background: rgba(255,255,255,0.02); }
+  [data-theme="light"] .exercise-header:hover { background: rgba(0,0,0,0.02); }
+
+  .ex-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+  .ex-name-wrap {}
+  .ex-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .ex-video-link {
+    font-size: 11px; color: var(--muted); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px; margin-top: 2px;
+    transition: color 0.2s;
+    font-family: 'Space Mono', monospace;
+  }
+  .ex-video-link:hover { color: var(--accent); }
+  .ex-video-icon { font-size: 12px; }
+
+  .ex-summary { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; white-space: nowrap; }
+
+  /* SERIES BODY */
+  .exercise-body { padding: 0 20px 14px 68px; }
+
+  .series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .serie-card {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.2s;
+  }
+  .serie-card.done { border-color: var(--accent); }
+
+  .serie-top {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .serie-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+  .serie-check {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s; font-size: 10px;
+    color: transparent;
+  }
+  .serie-check.checked { background: var(--accent); border-color: var(--accent); color: #000; }
+
+  .serie-reps {
+    font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700;
+    color: var(--text);
+  }
+  .serie-rir {
+    font-size: 10px; background: var(--rir); color: var(--muted);
+    border-radius: 4px; padding: 1px 6px; font-family: 'Space Mono', monospace;
+    display: inline-block; width: fit-content;
+  }
+
+  .serie-inputs { display: flex; gap: 8px; margin-top: 2px; }
+  .weight-input, .reps-done-input {
+    flex: 1; padding: 5px 8px;
+    background: var(--black); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text);
+    font-family: 'Space Mono', monospace; font-size: 12px;
+    outline: none; transition: border-color 0.2s;
+    min-width: 0;
+  }
+  .weight-input:focus, .reps-done-input:focus { border-color: var(--accent); }
+  .input-label { font-size: 9px; color: var(--muted); font-family: 'Space Mono', monospace; margin-bottom: 2px; letter-spacing: 1px; }
+  .input-group { display: flex; flex-direction: column; flex: 1; }
+
+  /* REST TIMER */
+  .rest-timer-btn {
+    font-size: 10px; font-family: 'Space Mono', monospace;
+    padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--muted); cursor: pointer; transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .rest-timer-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .rest-timer-btn.active { background: rgba(232,255,60,0.1); border-color: var(--accent); color: var(--accent); }
+
+  /* FLOATING TIMER */
+  .timer-float {
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
+    background: var(--card); border: 1px solid var(--accent);
+    border-radius: 16px; padding: 16px 20px;
+    min-width: 180px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+    display: none;
+    flex-direction: column; align-items: center; gap: 8px;
+    animation: slideUp 0.3s ease;
+  }
+  .timer-float.visible { display: flex; }
+  @keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .timer-label { font-size: 10px; font-family: 'Space Mono', monospace; color: var(--muted); letter-spacing: 1px; }
+  .timer-display { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1; color: var(--accent); }
+  .timer-display.urgent { color: var(--accent2); }
+  .timer-controls { display: flex; gap: 8px; }
+  .timer-ctrl-btn {
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 11px; font-family: 'Space Mono', monospace;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text); cursor: pointer; transition: all 0.2s;
+  }
+  .timer-ctrl-btn:hover { background: var(--card); }
+  .timer-presets { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .timer-preset {
+    padding: 3px 10px; border-radius: 12px; font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--muted); cursor: pointer; transition: all 0.2s;
+  }
+  .timer-preset:hover { color: var(--accent); border-color: var(--accent); }
+  .timer-progress-ring { position: relative; margin: 4px 0; }
+
+  /* NOTES */
+  .notes-section { margin-top: 10px; }
+  .notes-toggle {
+    font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace;
+    background: transparent; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; padding: 0;
+    transition: color 0.2s; letter-spacing: 1px;
+  }
+  .notes-toggle:hover { color: var(--text); }
+  .notes-area {
+    margin-top: 8px;
+    width: 100%; padding: 10px 12px;
+    background: var(--input-bg); border: 1px solid var(--input-border);
+    border-radius: 8px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    resize: vertical; outline: none; min-height: 72px;
+    transition: border-color 0.2s;
+    display: none;
+  }
+  .notes-area.open { display: block; }
+  .notes-area:focus { border-color: var(--accent); }
+  .notes-area::placeholder { color: var(--muted); }
+
+  /* TABLE HEADER */
+  .exercise-table-header {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 12px;
+    padding: 8px 20px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+  }
+  [data-theme="light"] .exercise-table-header { background: rgba(0,0,0,0.02); }
+  .th-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 40px;
+    max-width: 1100px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  .footer-text { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .objective-tag {
+    background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.3);
+    color: var(--accent2); padding: 5px 14px; border-radius: 20px;
+    font-size: 11px; font-family: 'Space Mono', monospace; letter-spacing: 1px;
+  }
+
+  @media (max-width: 768px) {
+    .topbar, .hero, .week-overview, .workouts, .footer { padding-left: 16px; padding-right: 16px; }
+    .week-grid { grid-template-columns: repeat(3, 1fr); }
+    .series-grid { grid-template-columns: 1fr 1fr; }
+    .exercise-body { padding-left: 20px; }
+  }
+  @media (max-width: 480px) {
+    .series-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FLOATING REST TIMER -->
+<div class="timer-float" id="timerFloat">
+  <div class="timer-label">REST TIMER</div>
+  <div class="timer-display" id="timerDisplay">90</div>
+  <div style="width:100%; background:var(--border); border-radius:4px; height:3px; overflow:hidden;">
+    <div id="timerBar" style="height:100%; background:var(--accent); width:100%; transition:width 1s linear; border-radius:4px;"></div>
+  </div>
+  <div class="timer-presets">
+    <button class="timer-preset" onclick="setTimer(60)">60s</button>
+    <button class="timer-preset" onclick="setTimer(90)">90s</button>
+    <button class="timer-preset" onclick="setTimer(120)">2min</button>
+    <button class="timer-preset" onclick="setTimer(180)">3min</button>
+  </div>
+  <div class="timer-controls">
+    <button class="timer-ctrl-btn" onclick="toggleTimer()">⏸ Pause</button>
+    <button class="timer-ctrl-btn" onclick="closeTimer()">✕ Close</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <button class="day-tab push active" onclick="scrollToDay('z1', this)">Z1 · PUSH</button>
+  <button class="day-tab pull" onclick="scrollToDay('z2', this)">Z2 · PULL</button>
+  <button class="day-tab legs" onclick="scrollToDay('z3', this)">Z3 · LEGS</button>
+  <button class="day-tab upper" onclick="scrollToDay('z4', this)">Z4 · UPPER</button>
+  <button class="day-tab lower" onclick="scrollToDay('z5', this)">Z5 · LOWER</button>
+  <div class="topbar-spacer"></div>
+  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-split">
+    <div>
+      <div class="hero-name">PROGRAM<span>SEBI</span></div>
+      <div class="split-badge">◆ 5 DAYS — PUSH / PULL / LEGS / UPPER / LOWER</div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-val">66<small style="font-size:13px">kg</small></span><div class="stat-label">Greutate</div></div>
+      <div class="stat"><span class="stat-val">173<small style="font-size:13px">cm</small></span><div class="stat-label">Înălțime</div></div>
+      <div class="stat"><span class="stat-val">21</span><div class="stat-label">Vârstă</div></div>
+      <div class="stat"><span class="stat-val" style="color:var(--accent2)">CUT</span><div class="stat-label">Obiectiv</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WEEK OVERVIEW -->
+<div class="week-overview">
+  <div class="section-label">Structura Săptămânii</div>
+  <div class="week-grid">
+    <div class="week-day push" onclick="scrollToDay('z1')">
+      <div class="day-num">01</div>
+      <div class="day-type">PUSH</div>
+      <div class="day-progress"><div class="day-progress-fill" id="prog-z1" style="width:0%"></div></div>
+      <div class="day-pct" id="pct-z1">0%</div>
+    </div>
+    <div class="week-day pull" onclick="scrollToDay('z2')">
+      <div class="day-num">02</div>
+      <div class="day-type">PULL</div>
+      <div class="day-progress"><div class="day-progress-fill" id="prog-z2" style="width:0%"></div></div>
+      <div class="day-pct" id="pct-z2">0%</div>
+    </div>
+    <div class="week-day legs" onclick="scrollToDay('z3')">
+      <div class="day-num">03</div>
+      <div class="day-type">LEGS</div>
+      <div class="day-progress"><div class="day-progress-fill" id="prog-z3" style="width:0%"></div></div>
+      <div class="day-pct" id="pct-z3">0%</div>
+    </div>
+    <div class="week-day upper" onclick="scrollToDay('z4')">
+      <div class="day-num">04</div>
+      <div class="day-type">UPPER</div>
+      <div class="day-progress"><div class="day-progress-fill" id="prog-z4" style="width:0%"></div></div>
+      <div class="day-pct" id="pct-z4">0%</div>
+    </div>
+    <div class="week-day lower" onclick="scrollToDay('z5')">
+      <div class="day-num">05</div>
+      <div class="day-type">LOWER</div>
+      <div class="day-progress"><div class="day-progress-fill" id="prog-z5" style="width:0%"></div></div>
+      <div class="day-pct" id="pct-z5">0%</div>
+    </div>
+  </div>
+</div>
+
+<!-- WORKOUTS -->
+<div class="workouts" id="workoutsContainer"></div>
+
+<div class="footer">
+  <div class="footer-text">DUTU COACHING · SEBI PT · 2024</div>
+  <div class="objective-tag">OBIECTIV: CUT</div>
+  <div class="footer-text">RIR = Reps In Reserve</div>
+</div>
+
+<script>
+const DAYS = [
+  {
+    id: 'z1', day: 'Z1', type: 'push', title: 'PUSH', sub: 'Ziua 1 — Piept · Umeri · Triceps',
+    exercises: [
+      { name: 'Machine Lateral Raises', video: 'https://www.youtube.com/results?search_query=machine+lateral+raises',
+        series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–10',rir:'RIR 2'},{label:'SERIA 3',reps:'10–12',rir:'RIR 2'}] },
+      { name: 'Incline Chest Press', video: 'https://www.youtube.com/results?search_query=incline+chest+press',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Horizontal Chest Press', video: 'https://www.youtube.com/results?search_query=horizontal+chest+press+machine',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Chest Fly', video: 'https://www.youtube.com/results?search_query=chest+fly+machine',
+        series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Shoulder Press (Aparat)', video: 'https://www.youtube.com/results?search_query=machine+shoulder+press',
+        series: [{label:'SERIA 1',reps:'8–12',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'One Arm Triceps Extension', video: 'https://www.youtube.com/results?search_query=one+arm+triceps+extension',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'7–10',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Dips', video: 'https://www.youtube.com/results?search_query=dips+triceps+gym',
+        series: [{label:'SERIA 1',reps:'8–12',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+    ]
+  },
+  {
+    id: 'z2', day: 'Z2', type: 'pull', title: 'PULL', sub: 'Ziua 2 — Spate · Biceps · Core',
+    exercises: [
+      { name: 'Leg Raises', video: 'https://www.youtube.com/results?search_query=leg+raises+hanging',
+        series: [{label:'SERIA 1',reps:'10 reps',rir:''},{label:'SERIA 2',reps:'12 reps',rir:''}] },
+      { name: 'One Arm Row', video: 'https://www.youtube.com/results?search_query=one+arm+dumbbell+row',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 1'}] },
+      { name: 'Pull Downs cu Bară', video: 'https://www.youtube.com/results?search_query=lat+pulldown+bar',
+        series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 1'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Rear Delt Fly', video: 'https://www.youtube.com/results?search_query=rear+delt+fly+machine',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 1'},{label:'SERIA 2',reps:'7–10',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Biceps Curl la Aparat', video: 'https://www.youtube.com/results?search_query=machine+bicep+curl',
+        series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Hammer Curl Unilateral la Banca Scott', video: 'https://www.youtube.com/results?search_query=hammer+curl+preacher+bench',
+        series: [{label:'SERIA 1',reps:'8–12',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Lower Back Extensions', video: 'https://www.youtube.com/results?search_query=lower+back+extensions+machine',
+        series: [{label:'SERIA 1',reps:'12 reps',rir:''},{label:'SERIA 2',reps:'12 reps',rir:''},{label:'SERIA 3',reps:'10 reps',rir:'RIR 0'}] },
+    ]
+  },
+  {
+    id: 'z3', day: 'Z3', type: 'legs', title: 'LEGS', sub: 'Ziua 3 — Picioare Complet',
+    exercises: [
+      { name: 'Seated Calves Raises', video: 'https://www.youtube.com/results?search_query=seated+calf+raise',
+        series: [{label:'SERIA 1',reps:'6–8',rir:'RIR 1'},{label:'SERIA 2',reps:'8–10',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'},{label:'SERIA 4',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Adductori', video: 'https://www.youtube.com/results?search_query=adductor+machine+gym',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 1'},{label:'SERIA 2',reps:'8–10',rir:'RIR 1'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Single Leg Curls', video: 'https://www.youtube.com/results?search_query=single+leg+curl+machine',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Pendulum Squats', video: 'https://www.youtube.com/results?search_query=pendulum+squat+machine',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'7–10',rir:'RIR 2'}] },
+      { name: 'Prone Leg Curls', video: 'https://www.youtube.com/results?search_query=prone+leg+curl+machine',
+        series: [{label:'SERIA 1',reps:'8–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Leg Extensions', video: 'https://www.youtube.com/results?search_query=leg+extension+machine',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 1'},{label:'SERIA 2',reps:'8–10',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+    ]
+  },
+  {
+    id: 'z4', day: 'Z4', type: 'upper', title: 'UPPER', sub: 'Ziua 4 — Corp Superior Complet',
+    exercises: [
+      { name: 'Machine Lateral Raises', video: 'https://www.youtube.com/results?search_query=machine+lateral+raises',
+        series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–10',rir:'RIR 2'},{label:'SERIA 3',reps:'10–12',rir:'RIR 2'}] },
+      { name: 'Incline Chest Press', video: 'https://www.youtube.com/results?search_query=incline+chest+press',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Chest Fly', video: 'https://www.youtube.com/results?search_query=chest+fly+machine',
+        series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Shoulder Press (Aparat)', video: 'https://www.youtube.com/results?search_query=machine+shoulder+press',
+        series: [{label:'SERIA 1',reps:'6–8',rir:'RIR 2'},{label:'SERIA 2',reps:'8–10',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'One Arm Row', video: 'https://www.youtube.com/results?search_query=one+arm+dumbbell+row',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 1'}] },
+      { name: 'Pull Downs cu Bară', video: 'https://www.youtube.com/results?search_query=lat+pulldown+bar',
+        series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 1'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'One Arm Triceps Extension', video: 'https://www.youtube.com/results?search_query=one+arm+triceps+extension',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'7–10',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Biceps Curl la Aparat', video: 'https://www.youtube.com/results?search_query=machine+bicep+curl',
+        series: [{label:'SERIA 1',reps:'7–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+    ]
+  },
+  {
+    id: 'z5', day: 'Z5', type: 'lower', title: 'LOWER', sub: 'Ziua 5 — Corp Inferior Complet',
+    exercises: [
+      { name: 'Seated Calves Raises', video: 'https://www.youtube.com/results?search_query=seated+calf+raise',
+        series: [{label:'SERIA 1',reps:'8–12',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'},{label:'SERIA 4',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Adductori', video: 'https://www.youtube.com/results?search_query=adductor+machine+gym',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Single Leg Curls', video: 'https://www.youtube.com/results?search_query=single+leg+curl+machine',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Belt Squat', video: 'https://www.youtube.com/results?search_query=belt+squat+machine',
+        series: [{label:'SERIA 1',reps:'6–10',rir:'RIR 2'},{label:'SERIA 2',reps:'7–10',rir:'RIR 2'},{label:'SERIA 3',reps:'10–12',rir:'RIR 2'}] },
+      { name: 'Prone Leg Curls', video: 'https://www.youtube.com/results?search_query=prone+leg+curl+machine',
+        series: [{label:'SERIA 1',reps:'8–10',rir:'RIR 1'},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'}] },
+      { name: 'Leg Extensions', video: 'https://www.youtube.com/results?search_query=leg+extension+machine',
+        series: [{label:'SERIA 1',reps:'6–10',rir:''},{label:'SERIA 2',reps:'8–12',rir:'RIR 2'},{label:'SERIA 3',reps:'8–12',rir:'RIR 2'}] },
+    ]
+  }
+];
+
+const state = {};
+
+function initState() {
+  DAYS.forEach(day => {
+    state[day.id] = {};
+    day.exercises.forEach((ex, ei) => {
+      state[day.id][ei] = {
+        checked: new Array(ex.series.length).fill(false),
+        weights: new Array(ex.series.length).fill(''),
+        repsDone: new Array(ex.series.length).fill(''),
+        notes: '',
+        notesOpen: false
+      };
+    });
+  });
+}
+
+function totalSeries(dayId) {
+  return DAYS.find(d => d.id === dayId).exercises.reduce((s, ex) => s + ex.series.length, 0);
+}
+
+function checkedSeries(dayId) {
+  return Object.values(state[dayId]).reduce((s, ex) => s + ex.checked.filter(Boolean).length, 0);
+}
+
+function updateProgress(dayId) {
+  const total = totalSeries(dayId);
+  const done = checkedSeries(dayId);
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const fill = document.getElementById('prog-' + dayId);
+  const label = document.getElementById('pct-' + dayId);
+  const cardFill = document.getElementById('card-prog-' + dayId);
+  if (fill) fill.style.width = pct + '%';
+  if (label) label.textContent = pct + '%';
+  if (cardFill) cardFill.style.width = pct + '%';
+}
+
+function toggleCheck(dayId, exIdx, serIdx) {
+  state[dayId][exIdx].checked[serIdx] = !state[dayId][exIdx].checked[serIdx];
+  const checkEl = document.getElementById(`check-${dayId}-${exIdx}-${serIdx}`);
+  const cardEl = document.getElementById(`serie-card-${dayId}-${exIdx}-${serIdx}`);
+  if (state[dayId][exIdx].checked[serIdx]) {
+    checkEl.classList.add('checked');
+    checkEl.textContent = '✓';
+    cardEl.classList.add('done');
+    startRestTimer(90);
+  } else {
+    checkEl.classList.remove('checked');
+    checkEl.textContent = '';
+    cardEl.classList.remove('done');
+  }
+  updateExSummary(dayId, exIdx);
+  updateProgress(dayId);
+}
+
+function updateExSummary(dayId, exIdx) {
+  const ex = state[dayId][exIdx];
+  const total = ex.checked.length;
+  const done = ex.checked.filter(Boolean).length;
+  const sumEl = document.getElementById(`ex-summary-${dayId}-${exIdx}`);
+  if (sumEl) sumEl.textContent = `${done}/${total} serii`;
+}
+
+function saveInput(dayId, exIdx, serIdx, type, val) {
+  state[dayId][exIdx][type][serIdx] = val;
+}
+
+function saveNote(dayId, exIdx, val) {
+  state[dayId][exIdx].notes = val;
+}
+
+function toggleNotes(dayId, exIdx) {
+  const area = document.getElementById(`notes-${dayId}-${exIdx}`);
+  const btn = document.getElementById(`notes-btn-${dayId}-${exIdx}`);
+  state[dayId][exIdx].notesOpen = !state[dayId][exIdx].notesOpen;
+  if (state[dayId][exIdx].notesOpen) {
+    area.classList.add('open');
+    btn.textContent = '▲ Ascunde note';
+    area.focus();
+  } else {
+    area.classList.remove('open');
+    btn.textContent = '▼ Note personale';
+  }
+}
+
+function renderAll() {
+  const container = document.getElementById('workoutsContainer');
+  container.innerHTML = '';
+  DAYS.forEach(day => {
+    const card = document.createElement('div');
+    card.className = `workout-card ${day.type}`;
+    card.id = day.id;
+
+    let exHTML = '';
+    day.exercises.forEach((ex, ei) => {
+      const seriesHTML = ex.series.map((s, si) => `
+        <div class="serie-card" id="serie-card-${day.id}-${ei}-${si}">
+          <div class="serie-top">
+            <span class="serie-label">${s.label}</span>
+            <div class="serie-check" id="check-${day.id}-${ei}-${si}" onclick="toggleCheck('${day.id}',${ei},${si})"></div>
+          </div>
+          <div class="serie-reps">${s.reps}</div>
+          ${s.rir ? `<span class="serie-rir">${s.rir}</span>` : ''}
+          <div class="serie-inputs">
+            <div class="input-group">
+              <div class="input-label">KG</div>
+              <input class="weight-input" type="number" placeholder="0" min="0" step="0.5"
+                value="${state[day.id][ei].weights[si]}"
+                oninput="saveInput('${day.id}',${ei},${si},'weights',this.value)"
+                title="Greutate (kg)">
+            </div>
+            <div class="input-group">
+              <div class="input-label">REPS</div>
+              <input class="reps-done-input" type="number" placeholder="0" min="0" step="1"
+                value="${state[day.id][ei].repsDone[si]}"
+                oninput="saveInput('${day.id}',${ei},${si},'repsDone',this.value)"
+                title="Repetări efectuate">
+            </div>
+          </div>
+          <button class="rest-timer-btn" onclick="startRestTimer(90)">⏱ REST 90s</button>
+        </div>
+      `).join('');
+
+      exHTML += `
+        <div class="exercise-row">
+          <div class="exercise-header" onclick="void(0)">
+            <div class="ex-num">${String(ei+1).padStart(2,'0')}</div>
+            <div class="ex-name-wrap">
+              <div class="ex-name">${ex.name}</div>
+              <a class="ex-video-link" href="${ex.video}" target="_blank" rel="noopener">
+                <span class="ex-video-icon">▶</span> Demo video
+              </a>
+            </div>
+            <div class="ex-summary" id="ex-summary-${day.id}-${ei}">0/${ex.series.length} serii</div>
+          </div>
+          <div class="exercise-body">
+            <div class="series-grid">${seriesHTML}</div>
+            <div class="notes-section">
+              <button class="notes-toggle" id="notes-btn-${day.id}-${ei}" onclick="toggleNotes('${day.id}',${ei})">▼ Note personale</button>
+              <textarea class="notes-area" id="notes-${day.id}-${ei}" placeholder="Adaugă note pentru acest exercițiu... (ex: greutate record, formă, observații)"
+                oninput="saveNote('${day.id}',${ei},this.value)">${state[day.id][ei].notes}</textarea>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="day-circle">${day.day}</div>
+          <div>
+            <div class="card-title">${day.title}</div>
+            <div class="card-subtitle">${day.sub}</div>
+          </div>
+        </div>
+        <div class="card-header-right">
+          <div class="cardio-tag">🏃 10 MIN CARDIO</div>
+        </div>
+      </div>
+      <div class="card-progress-bar"><div class="card-progress-fill" id="card-prog-${day.id}" style="width:0%"></div></div>
+      <div class="exercise-table-header">
+        <div class="th-label">#</div>
+        <div class="th-label">Exercițiu</div>
+        <div class="th-label">Progress</div>
+      </div>
+      ${exHTML}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function scrollToDay(id, tabEl) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+  if (tabEl) tabEl.classList.add('active');
+}
+
+// Update active tab on scroll
+window.addEventListener('scroll', () => {
+  DAYS.forEach(day => {
+    const el = document.getElementById(day.id);
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= 100 && rect.bottom > 100) {
+      document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+      const tab = document.querySelector(`.day-tab.${day.type}`);
+      if (tab) tab.classList.add('active');
+    }
+  });
+}, { passive: true });
+
+// THEME
+function toggleTheme() {
+  const body = document.body;
+  const isLight = body.getAttribute('data-theme') === 'light';
+  body.setAttribute('data-theme', isLight ? '' : 'light');
+  document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
+}
+
+// REST TIMER
+let timerInterval = null;
+let timerTotal = 90;
+let timerLeft = 90;
+let timerRunning = false;
+
+function setTimer(seconds) {
+  clearInterval(timerInterval);
+  timerTotal = seconds;
+  timerLeft = seconds;
+  timerRunning = true;
+  updateTimerDisplay();
+  document.getElementById('timerFloat').classList.add('visible');
+  timerInterval = setInterval(tickTimer, 1000);
+}
+
+function startRestTimer(seconds) {
+  setTimer(seconds);
+}
+
+function tickTimer() {
+  if (!timerRunning) return;
+  timerLeft--;
+  updateTimerDisplay();
+  if (timerLeft <= 0) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timerDisplay').textContent = 'GO!';
+    document.getElementById('timerDisplay').classList.add('urgent');
+    document.getElementById('timerBar').style.width = '0%';
+    try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhS0hljrO1pYFYSVBxo8CymWpGQlNypMC4mGtHQlJ0pMC5mGtHQlJ0pMC5mGtHQlJ0pMC5mGtHQlJ0pMC5mGtHQlJ0pMC5mA==').play(); } catch(e) {}
+  }
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timerLeft / 60);
+  const secs = timerLeft % 60;
+  const disp = timerLeft >= 60 ? `${mins}:${String(secs).padStart(2,'0')}` : String(timerLeft);
+  document.getElementById('timerDisplay').textContent = disp;
+  document.getElementById('timerDisplay').classList.toggle('urgent', timerLeft <= 10 && timerLeft > 0);
+  const pct = timerTotal > 0 ? (timerLeft / timerTotal * 100) : 0;
+  document.getElementById('timerBar').style.width = pct + '%';
+  document.getElementById('timerBar').style.background = timerLeft <= 10 ? 'var(--accent2)' : 'var(--accent)';
+}
+
+function toggleTimer() {
+  timerRunning = !timerRunning;
+  const btn = document.querySelector('.timer-ctrl-btn');
+  btn.textContent = timerRunning ? '⏸ Pause' : '▶ Resume';
+  if (timerRunning && timerLeft > 0) {
+    timerInterval = setInterval(tickTimer, 1000);
+  } else {
+    clearInterval(timerInterval);
+  }
+}
+
+function closeTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  document.getElementById('timerFloat').classList.remove('visible');
+}
+
+initState();
+renderAll();
+</script>
+</body>
+</html>
