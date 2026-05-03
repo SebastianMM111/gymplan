@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEBI — Program de Antrenament</title>
+<title>GYM — Training Program</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -289,7 +289,7 @@
 
   .card-header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-  /* CARDIO TAG — interactive */
+  /* CARDIO TAG */
   .cardio-tag {
     display: flex; align-items: center; gap: 8px;
     background: var(--cardio-bg);
@@ -551,6 +551,112 @@
   @media (max-width: 480px) {
     .series-grid { grid-template-columns: 1fr; }
   }
+
+  /* EDITABLE STATS */
+  .stat-input {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px; font-weight: 700;
+    color: var(--accent);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--border);
+    outline: none;
+    width: 80px;
+    text-align: center;
+    padding: 2px 0;
+    transition: border-color 0.2s;
+    display: block;
+  }
+  [data-theme="kawaii"] .stat-input { font-family: 'Nunito', sans-serif; font-weight: 800; }
+  .stat-input:focus { border-bottom-color: var(--accent); }
+  .stat-input::placeholder { color: var(--muted); font-size: 18px; }
+  /* hide number spinners */
+  .stat-input::-webkit-inner-spin-button,
+  .stat-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .stat-input[type=number] { -moz-appearance: textfield; }
+
+  /* GOAL PICKER */
+  .goal-stat { align-items: flex-start !important; }
+  .goal-picker {
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+  .goal-btn {
+    padding: 4px 10px; border-radius: 20px;
+    font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+    letter-spacing: 1px;
+    border: 1px solid var(--border);
+    background: transparent; color: var(--muted);
+    cursor: pointer; transition: all 0.2s;
+  }
+  [data-theme="kawaii"] .goal-btn { font-family: 'Nunito', sans-serif; letter-spacing: 0; font-size: 11px; }
+  .goal-btn:hover { color: var(--text); border-color: var(--text); }
+  .goal-btn[data-goal="CUT"].active   { background: rgba(255,77,77,0.15);  border-color: var(--accent2); color: var(--accent2); }
+  .goal-btn[data-goal="MAINTAIN"].active { background: rgba(232,255,60,0.12); border-color: var(--accent);  color: var(--accent); }
+  .goal-btn[data-goal="BULK"].active  { background: rgba(60,180,255,0.15); border-color: var(--pull);   color: var(--pull); }
+
+
+  .reset-btn {
+    color: var(--muted);
+    border-color: var(--border);
+  }
+  .reset-btn:hover {
+    border-color: var(--accent2) !important;
+    color: var(--accent2) !important;
+    background: rgba(255,77,77,0.08) !important;
+  }
+
+  /* RESET MODAL */
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.15s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .modal-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    max-width: 340px; width: 90%;
+    text-align: center;
+    animation: popIn 0.2s ease;
+  }
+  [data-theme="kawaii"] .modal-box { border-radius: 24px; box-shadow: 0 8px 40px rgba(255,107,170,0.2); }
+  @keyframes popIn { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
+  .modal-icon { font-size: 36px; margin-bottom: 12px; }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 26px;
+    color: var(--text); margin-bottom: 8px;
+  }
+  [data-theme="kawaii"] .modal-title { font-family: 'Pacifico', cursive; font-size: 20px; }
+  .modal-body {
+    font-size: 13px; color: var(--muted); line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .modal-actions { display: flex; gap: 10px; justify-content: center; }
+  .modal-cancel {
+    padding: 8px 20px; border-radius: 20px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--muted); font-family: 'Space Mono', monospace;
+    font-size: 11px; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  [data-theme="kawaii"] .modal-cancel { font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0; border-radius: 12px; }
+  .modal-cancel:hover { color: var(--text); border-color: var(--text); }
+  .modal-confirm {
+    padding: 8px 20px; border-radius: 20px;
+    border: 1px solid var(--accent2);
+    background: rgba(255,77,77,0.12);
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 1px; font-weight: 700;
+  }
+  [data-theme="kawaii"] .modal-confirm { font-family: 'Nunito', sans-serif; font-weight: 800; letter-spacing: 0; border-radius: 12px; }
+  .modal-confirm:hover { background: rgba(255,77,77,0.25); }
+
 </style>
 </head>
 <body>
@@ -583,20 +689,37 @@
   <button class="day-tab lower" onclick="scrollToDay('z5', this)">Z5 · LOWER</button>
   <div class="topbar-spacer"></div>
   <button class="theme-btn" onclick="cycleTheme()" id="themeBtn">🌙 Dark</button>
+  <button class="theme-btn reset-btn" onclick="confirmReset()" id="resetBtn">↺ Reset Week</button>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-split">
     <div>
-      <div class="hero-name">PROGRAM<span>SEBI</span></div>
+      <div class="hero-name">PROGRAM<span>GYM</span></div>
       <div class="split-badge">◆ 5 DAYS — PUSH / PULL / LEGS / UPPER / LOWER</div>
     </div>
     <div class="hero-stats">
-      <div class="stat"><span class="stat-val">66<small style="font-size:13px">kg</small></span><div class="stat-label">Greutate</div></div>
-      <div class="stat"><span class="stat-val">173<small style="font-size:13px">cm</small></span><div class="stat-label">Înălțime</div></div>
-      <div class="stat"><span class="stat-val">21</span><div class="stat-label">Vârstă</div></div>
-      <div class="stat"><span class="stat-val" style="color:var(--accent2)">CUT</span><div class="stat-label">Obiectiv</div></div>
+      <div class="stat">
+        <input class="stat-input" id="inp-weight" type="number" placeholder="—" min="30" max="250" step="0.5" title="Weight (kg)" oninput="saveUserProfile()">
+        <div class="stat-label">Weight (kg)</div>
+      </div>
+      <div class="stat">
+        <input class="stat-input" id="inp-height" type="number" placeholder="—" min="100" max="250" step="1" title="Height (cm)" oninput="saveUserProfile()">
+        <div class="stat-label">Height (cm)</div>
+      </div>
+      <div class="stat">
+        <input class="stat-input" id="inp-age" type="number" placeholder="—" min="10" max="99" step="1" title="Age" oninput="saveUserProfile()">
+        <div class="stat-label">Age</div>
+      </div>
+      <div class="stat goal-stat">
+        <div class="goal-picker" id="goalPicker">
+          <button class="goal-btn" data-goal="CUT" onclick="setGoal('CUT')">CUT</button>
+          <button class="goal-btn" data-goal="MAINTAIN" onclick="setGoal('MAINTAIN')">MAINTAIN</button>
+          <button class="goal-btn" data-goal="BULK" onclick="setGoal('BULK')">BULK</button>
+        </div>
+        <div class="stat-label">Goal</div>
+      </div>
     </div>
   </div>
 </section>
@@ -642,7 +765,7 @@
 <div class="workouts" id="workoutsContainer"></div>
 
 <div class="footer">
-  <div class="footer-text">DUTU COACHING · SEBI PT · 2024</div>
+  <div class="footer-text">GYM TRACKER · 2024</div>
   <div class="objective-tag">OBIECTIV: CUT</div>
   <div class="footer-text">RIR = Reps In Reserve</div>
 </div>
@@ -749,25 +872,78 @@ const DAYS = [
   }
 ];
 
+const LS_KEY = 'sebi_gym_v1';
 const state = {};
-const cardioState = {}; // track cardio done per day
+const cardioState = {};
 
+// ── PERSISTENCE ──────────────────────────────────────────────
+function saveState() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({ state, cardioState, themeIdx }));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    // Restore state
+    DAYS.forEach(day => {
+      if (saved.state && saved.state[day.id]) {
+        state[day.id] = {};
+        day.exercises.forEach((ex, ei) => {
+          const savedEx = saved.state[day.id][ei];
+          if (savedEx) {
+            state[day.id][ei] = {
+              checked:    savedEx.checked   || new Array(ex.series.length).fill(false),
+              weights:    savedEx.weights   || new Array(ex.series.length).fill(''),
+              repsDone:   savedEx.repsDone  || new Array(ex.series.length).fill(''),
+              notes:      savedEx.notes     || '',
+              notesOpen:  false // always start collapsed
+            };
+          } else {
+            state[day.id][ei] = defaultExState(ex);
+          }
+        });
+      }
+      if (saved.cardioState) {
+        cardioState[day.id] = saved.cardioState[day.id] || false;
+      }
+    });
+    // Restore theme
+    if (typeof saved.themeIdx === 'number') {
+      themeIdx = saved.themeIdx;
+      const t = themes[themeIdx];
+      document.body.setAttribute('data-theme', t.key);
+      document.getElementById('themeBtn').textContent = t.label;
+    }
+    return true;
+  } catch(e) { return false; }
+}
+
+function defaultExState(ex) {
+  return {
+    checked:   new Array(ex.series.length).fill(false),
+    weights:   new Array(ex.series.length).fill(''),
+    repsDone:  new Array(ex.series.length).fill(''),
+    notes:     '',
+    notesOpen: false
+  };
+}
+
+// ── STATE INIT ────────────────────────────────────────────────
 function initState() {
   DAYS.forEach(day => {
     state[day.id] = {};
     cardioState[day.id] = false;
     day.exercises.forEach((ex, ei) => {
-      state[day.id][ei] = {
-        checked: new Array(ex.series.length).fill(false),
-        weights: new Array(ex.series.length).fill(''),
-        repsDone: new Array(ex.series.length).fill(''),
-        notes: '',
-        notesOpen: false
-      };
+      state[day.id][ei] = defaultExState(ex);
     });
   });
 }
 
+// ── PROGRESS ──────────────────────────────────────────────────
 function totalSeries(dayId) {
   return DAYS.find(d => d.id === dayId).exercises.reduce((s, ex) => s + ex.series.length, 0);
 }
@@ -788,6 +964,7 @@ function updateProgress(dayId) {
   if (cardFill) cardFill.style.width = pct + '%';
 }
 
+// ── CARDIO ────────────────────────────────────────────────────
 function toggleCardio(dayId) {
   cardioState[dayId] = !cardioState[dayId];
   const tagEl = document.getElementById('cardio-tag-' + dayId);
@@ -803,8 +980,10 @@ function toggleCardio(dayId) {
     checkEl.textContent = '';
     textEl.textContent = '10 MIN CARDIO';
   }
+  saveState();
 }
 
+// ── SERIES CHECK ──────────────────────────────────────────────
 function toggleCheck(dayId, exIdx, serIdx) {
   state[dayId][exIdx].checked[serIdx] = !state[dayId][exIdx].checked[serIdx];
   const checkEl = document.getElementById(`check-${dayId}-${exIdx}-${serIdx}`);
@@ -821,6 +1000,7 @@ function toggleCheck(dayId, exIdx, serIdx) {
   }
   updateExSummary(dayId, exIdx);
   updateProgress(dayId);
+  saveState();
 }
 
 function updateExSummary(dayId, exIdx) {
@@ -833,10 +1013,12 @@ function updateExSummary(dayId, exIdx) {
 
 function saveInput(dayId, exIdx, serIdx, type, val) {
   state[dayId][exIdx][type][serIdx] = val;
+  saveState();
 }
 
 function saveNote(dayId, exIdx, val) {
   state[dayId][exIdx].notes = val;
+  saveState();
 }
 
 function toggleNotes(dayId, exIdx) {
@@ -851,8 +1033,10 @@ function toggleNotes(dayId, exIdx) {
     area.classList.remove('open');
     btn.textContent = '▼ Note personale';
   }
+  // notesOpen is intentionally NOT saved — always start collapsed on reload
 }
 
+// ── RENDER ────────────────────────────────────────────────────
 function renderAll() {
   const container = document.getElementById('workoutsContainer');
   container.innerHTML = '';
@@ -863,11 +1047,15 @@ function renderAll() {
 
     let exHTML = '';
     day.exercises.forEach((ex, ei) => {
-      const seriesHTML = ex.series.map((s, si) => `
-        <div class="serie-card" id="serie-card-${day.id}-${ei}-${si}">
+      const seriesHTML = ex.series.map((s, si) => {
+        const isChecked = state[day.id][ei].checked[si];
+        const weightVal = state[day.id][ei].weights[si] || '';
+        const repsVal   = state[day.id][ei].repsDone[si] || '';
+        return `
+        <div class="serie-card${isChecked ? ' done' : ''}" id="serie-card-${day.id}-${ei}-${si}">
           <div class="serie-top">
             <span class="serie-label">${s.label}</span>
-            <div class="serie-check" id="check-${day.id}-${ei}-${si}" onclick="toggleCheck('${day.id}',${ei},${si})"></div>
+            <div class="serie-check${isChecked ? ' checked' : ''}" id="check-${day.id}-${ei}-${si}" onclick="toggleCheck('${day.id}',${ei},${si})">${isChecked ? '✓' : ''}</div>
           </div>
           <div class="serie-reps">${s.reps}</div>
           ${s.rir ? `<span class="serie-rir">${s.rir}</span>` : ''}
@@ -875,21 +1063,24 @@ function renderAll() {
             <div class="input-group">
               <div class="input-label">KG</div>
               <input class="weight-input" type="number" placeholder="0" min="0" step="0.5"
-                value="${state[day.id][ei].weights[si]}"
+                value="${weightVal}"
                 oninput="saveInput('${day.id}',${ei},${si},'weights',this.value)"
                 title="Greutate (kg)">
             </div>
             <div class="input-group">
               <div class="input-label">REPS</div>
               <input class="reps-done-input" type="number" placeholder="0" min="0" step="1"
-                value="${state[day.id][ei].repsDone[si]}"
+                value="${repsVal}"
                 oninput="saveInput('${day.id}',${ei},${si},'repsDone',this.value)"
                 title="Repetări efectuate">
             </div>
           </div>
           <button class="rest-timer-btn" onclick="startRestTimer(90)">⏱ REST 90s</button>
         </div>
-      `).join('');
+      `}).join('');
+
+      const doneSeries = state[day.id][ei].checked.filter(Boolean).length;
+      const totalSer   = ex.series.length;
 
       exHTML += `
         <div class="exercise-row">
@@ -901,7 +1092,7 @@ function renderAll() {
                 <span class="ex-video-icon">▶</span> Demo video
               </a>
             </div>
-            <div class="ex-summary" id="ex-summary-${day.id}-${ei}">0/${ex.series.length} serii</div>
+            <div class="ex-summary" id="ex-summary-${day.id}-${ei}">${doneSeries}/${totalSer} serii</div>
           </div>
           <div class="exercise-body">
             <div class="series-grid">${seriesHTML}</div>
@@ -915,6 +1106,8 @@ function renderAll() {
       `;
     });
 
+    const isCardioDone = cardioState[day.id];
+
     card.innerHTML = `
       <div class="card-header">
         <div class="card-header-left">
@@ -925,9 +1118,9 @@ function renderAll() {
           </div>
         </div>
         <div class="card-header-right">
-          <div class="cardio-tag" id="cardio-tag-${day.id}" onclick="toggleCardio('${day.id}')" title="Click to mark cardio done">
-            <div class="cardio-check-circle" id="cardio-check-${day.id}"></div>
-            🏃 <span id="cardio-text-${day.id}">10 MIN CARDIO</span>
+          <div class="cardio-tag${isCardioDone ? ' done' : ''}" id="cardio-tag-${day.id}" onclick="toggleCardio('${day.id}')" title="Click to mark cardio done">
+            <div class="cardio-check-circle" id="cardio-check-${day.id}">${isCardioDone ? '✓' : ''}</div>
+            🏃 <span id="cardio-text-${day.id}">${isCardioDone ? 'CARDIO DONE!' : '10 MIN CARDIO'}</span>
           </div>
         </div>
       </div>
@@ -941,8 +1134,12 @@ function renderAll() {
     `;
     container.appendChild(card);
   });
+
+  // Update all progress bars after render
+  DAYS.forEach(day => updateProgress(day.id));
 }
 
+// ── NAVIGATION ────────────────────────────────────────────────
 function scrollToDay(id, tabEl) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -963,7 +1160,7 @@ window.addEventListener('scroll', () => {
   });
 }, { passive: true });
 
-// THEME CYCLING: dark → purple → kawaii → dark
+// ── THEME ─────────────────────────────────────────────────────
 const themes = [
   { key: '', label: '🌙 Dark' },
   { key: 'purple', label: '💜 Purple' },
@@ -976,9 +1173,10 @@ function cycleTheme() {
   const t = themes[themeIdx];
   document.body.setAttribute('data-theme', t.key);
   document.getElementById('themeBtn').textContent = t.label;
+  saveState();
 }
 
-// REST TIMER
+// ── REST TIMER ────────────────────────────────────────────────
 let timerInterval = null;
 let timerTotal = 90;
 let timerLeft = 90;
@@ -1040,8 +1238,81 @@ function closeTimer() {
   document.getElementById('timerFloat').classList.remove('visible');
 }
 
+
+// ── USER PROFILE ──────────────────────────────────────────────
+const PROFILE_KEY = 'gym_profile_v1';
+
+function saveUserProfile() {
+  const profile = {
+    weight: document.getElementById('inp-weight').value,
+    height: document.getElementById('inp-height').value,
+    age:    document.getElementById('inp-age').value,
+    goal:   currentGoal
+  };
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch(e) {}
+}
+
+function loadUserProfile() {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY);
+    if (!raw) return;
+    const p = JSON.parse(raw);
+    if (p.weight) document.getElementById('inp-weight').value = p.weight;
+    if (p.height) document.getElementById('inp-height').value = p.height;
+    if (p.age)    document.getElementById('inp-age').value    = p.age;
+    if (p.goal)   setGoal(p.goal, false);
+  } catch(e) {}
+}
+
+let currentGoal = '';
+function setGoal(goal, save = true) {
+  currentGoal = goal;
+  document.querySelectorAll('.goal-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.goal === goal);
+  });
+  if (save) saveUserProfile();
+}
+
+
+// ── RESET ─────────────────────────────────────────────────────
+function confirmReset() {
+  const backdrop = document.createElement('div');
+  backdrop.className = 'modal-backdrop';
+  backdrop.id = 'resetModal';
+  backdrop.innerHTML = `
+    <div class="modal-box">
+      <div class="modal-icon">🗑️</div>
+      <div class="modal-title">Reset Week?</div>
+      <div class="modal-body">
+        This clears all checked sets, weights, reps, notes and cardio for the week.<br><br>
+        Your profile (weight, height, age, goal) is kept.
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+        <button class="modal-confirm" onclick="resetWeek()">Yes, reset</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+}
+
+function closeModal() {
+  const m = document.getElementById('resetModal');
+  if (m) m.remove();
+}
+
+function resetWeek() {
+  localStorage.removeItem('sebi_gym_v1');
+  location.reload();
+}
+
+// ── BOOT ──────────────────────────────────────────────────────
 initState();
+loadState();   // overwrite defaults with saved data if available
+loadUserProfile();
 renderAll();
+
 </script>
 </body>
 </html>
