@@ -766,7 +766,7 @@
 
 <div class="footer">
   <div class="footer-text">GYM TRACKER · 2024</div>
-  <div class="objective-tag">OBIECTIV: CUT</div>
+  <div class="objective-tag" id="footer-goal">GOAL: —</div>
   <div class="footer-text">RIR = Reps In Reserve</div>
 </div>
 
@@ -1270,9 +1270,10 @@ function setGoal(goal, save = true) {
   document.querySelectorAll('.goal-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.goal === goal);
   });
+  const tag = document.getElementById('footer-goal');
+  if (tag) tag.textContent = 'GOAL: ' + goal;
   if (save) saveUserProfile();
 }
-
 
 // ── RESET ─────────────────────────────────────────────────────
 function confirmReset() {
